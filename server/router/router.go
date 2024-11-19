@@ -13,4 +13,5 @@ func SetUpRoutes(app *fiber.App) {
 	app.Delete("/blog/:id", controller.BlogDelete)
 
 	app.Post("/auth/register", auth.Register)
+	app.Post("/auth/login", auth.LogIn)
 }
