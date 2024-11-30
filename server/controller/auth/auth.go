@@ -72,9 +72,10 @@ func LogIn(c *fiber.Ctx) error {
 		return c.JSON(res)
 	}
 
-	token, err := helper.GenerateToken(user)
+	token, err := helper.GenerateToken(user, 30, helper.TOKEN_TYPE_ACCESS)
+	refreshToken, refreshTokenErr := helper.GenerateToken(user, 30, helper.TOKEN_TYPE_REFRESH)
 
-	if err != nil {
+	if err != nil || refreshTokenErr != nil {
 		c.Status(500)
 		res["message"] = "Something went wrong!"
 		return c.JSON(res)
@@ -82,6 +83,41 @@ func LogIn(c *fiber.Ctx) error {
 
 	c.Status(200)
 	res["token"] = token
+	res["refreshToken"] = refreshToken
 	res["message"] = "User authenticated"
 	return c.JSON(res)
+}
+
+func RefreshToken(c *fiber.Ctx) error {
+	res := fiber.Map{}
+
+	refreshToken := c.Get("refresh-token")
+	if refreshToken == "" {
+		res["message"] = "Token is required"
+		return c.Status(400).JSON(res)
+	}
+
+	payload, err := helper.ValidateToken(refreshToken, helper.TOKEN_TYPE_REFRESH)
+	if err != "" {
+		res["message"] = "Invalid or expired token"
+		res["error"] = err
+		return c.Status(401).JSON(res)
+	}
+
+	user := model.User{}
+	result := database.DBConn.First(&user, "email=?", payload.Email)
+	if result.Error != nil {
+		res["message"] = "User not found"
+		return c.Status(404).JSON(res)
+	}
+
+	newToken, tokenErr := helper.GenerateToken(user, (60 * 7), helper.TOKEN_TYPE_ACCESS)
+	if tokenErr != nil {
+		res["message"] = "Failed to generate new token"
+		return c.Status(500).JSON(res)
+	}
+
+	res["newAccessToken"] = newToken
+	res["message"] = "Token refreshed successfully"
+	return c.Status(200).JSON(res)
 }
