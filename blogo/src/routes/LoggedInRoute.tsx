@@ -1,11 +1,12 @@
 import Layout from '@/components/setup/Layout';
+import { useSession } from '@/contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
 const LoggedInRoute = () => {
   const [loading, setLoading] = useState(true);
 
-  const isLoggedIn = true;
+  const { isLoggedIn } = useSession();
 
   useEffect(() => {
     const verifyAuth = async () => {

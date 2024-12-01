@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 	"github.com/vipulchaudhary16/go-blog/database"
@@ -21,6 +22,11 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+	}))
+
 	db, err := database.DBConn.DB()
 	if err != nil {
 		panic("Error in db connection")
@@ -33,5 +39,6 @@ func main() {
 
 	router.SetUpRoutes(app)
 
+	log.Println("Server is running on http://localhost:8000")
 	app.Listen(":8000")
 }

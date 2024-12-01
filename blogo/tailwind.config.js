@@ -63,5 +63,17 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.hyperlink': {
+          '@apply text-blue-600': {},
+        },
+        '.centered-full-screen': {
+          '@apply flex flex-col gap-5 justify-center items-center h-screen': {},
+        },
+      });
+    },
+  ],
 };
