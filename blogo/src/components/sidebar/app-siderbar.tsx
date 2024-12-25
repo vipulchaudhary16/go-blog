@@ -17,9 +17,12 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ChevronUp } from 'lucide-react';
+import { useSession } from '@/contexts/UserContext';
 
 export function AppSidebar() {
   const navigate = useNavigate();
+  const { user } = useSession();
+
   const menuItems = [
     {
       title: 'Your Blogs',
@@ -58,7 +61,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  Username <ChevronUp className="ml-auto" />
+                  {`${user?.first_name} ${user?.last_name}`} <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">

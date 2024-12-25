@@ -19,5 +19,6 @@ func SetUpRoutes(app *fiber.App) {
 
 	privateRoute := app.Group("/private")
 	privateRoute.Use(middleware.AuthenticateToken)
+	privateRoute.Get("/user-profile", controller.GetProfile)
 
 }

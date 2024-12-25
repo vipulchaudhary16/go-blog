@@ -2,7 +2,11 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Button } from '../ui/button';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import useApiCall from '@/hooks/user-api-call';
+import authApi from '@/api/authApi';
+import { useEffect } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 type Props = {};
 
@@ -14,9 +18,25 @@ function LogIn({}: Props) {
     },
   });
 
+  const { loading, error, data, execute } = useApiCall({ apiCall: authApi.logIn });
+  const navigate = useNavigate();
+
   const onSubmit = (data: any) => {
-    console.log(data);
+    execute(data);
   };
+
+  useEffect(() => {
+    if (data) {
+      localStorage.setItem('token', data.token);
+      navigate('/');
+      toast({ description: 'User Logged In Successfully' });
+      window.location.reload();
+    }
+
+    if (error) {
+      toast({ description: 'Something went wrong' });
+    }
+  }, [data, error]);
 
   return (
     <div className="centered-full-screen">
@@ -53,7 +73,7 @@ function LogIn({}: Props) {
               </FormItem>
             )}
           />
-          <Button type="submit">LogIn</Button>
+          <Button type="submit">LogIn {loading && 'Loading...'}</Button>
         </form>
       </Form>
       <p>

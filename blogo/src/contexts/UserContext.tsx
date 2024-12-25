@@ -1,3 +1,5 @@
+import userApi from '@/api/userApi';
+import Loader from '@/components/common/Loader';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface User {
@@ -18,17 +20,26 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
     try {
+      const data = await userApi.userProfile();
+      setUser(data.user);
     } catch (error) {
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUser();
   }, []);
+
+  if (loading) {
+    return <Loader text="Loading Your Profile..." />;
+  }
 
   return (
     <UserContext.Provider value={{ user, setUser, fetchUser, isLoggedIn: !!user }}>

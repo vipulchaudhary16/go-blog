@@ -85,6 +85,7 @@ func LogIn(c *fiber.Ctx) error {
 	res["token"] = token
 	res["refreshToken"] = refreshToken
 	res["message"] = "User authenticated"
+	res["user"] = user
 	return c.JSON(res)
 }
 
