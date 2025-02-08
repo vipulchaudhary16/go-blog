@@ -34,7 +34,10 @@ export function AppSidebar() {
     },
   ];
 
-  const logOut = () => {};
+  const logOut = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   return (
     <Sidebar>
@@ -59,14 +62,19 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => navigate('/form/blog/new')}>
+                  Write Your own blog
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
                   {`${user?.first_name} ${user?.last_name}`} <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-                <DropdownMenuItem>
-                  <span onClick={logOut}>Sign out</span>
+                <DropdownMenuItem onClick={logOut}>
+                  <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
