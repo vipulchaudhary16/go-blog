@@ -4,14 +4,17 @@ import React from 'react';
 type FormFooterProps = {
   createText?: string;
   resetText?: string;
-  onCreate?: () => void;
+  createProps?: {
+    loading?: boolean;
+    onCreate: () => void;
+  };
   onReset?: () => void;
 };
 
 const FormFooter: React.FC<FormFooterProps> = ({
   createText = 'Create',
   resetText = 'Reset',
-  onCreate,
+  createProps,
   onReset,
 }) => {
   return (
@@ -19,7 +22,7 @@ const FormFooter: React.FC<FormFooterProps> = ({
       <Button variant={'outline'} onClick={onReset}>
         {resetText}
       </Button>
-      <Button type="submit" onClick={onCreate}>
+      <Button type="submit" disabled={createProps?.loading} onClick={createProps?.onCreate}>
         {createText}
       </Button>
     </div>

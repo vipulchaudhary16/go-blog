@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/vipulchaudhary16/go-blog/database"
+	"github.com/vipulchaudhary16/go-blog/helper"
 	"github.com/vipulchaudhary16/go-blog/model"
 )
 
@@ -51,6 +52,11 @@ func BlogCreate(c *fiber.Ctx) error {
 		response["message"] = "Invalid payload"
 		return c.JSON(response)
 	}
+
+	payload := c.Locals("payload")
+
+	userId := payload.(*helper.TokenPayload).UserId
+	record.UserID = userId
 
 	result := database.DBConn.Create(record)
 

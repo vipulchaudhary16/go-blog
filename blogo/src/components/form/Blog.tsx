@@ -1,20 +1,37 @@
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import LexicalEditor from '../common/RichTextEditor/RichTextEditor';
 import Heading from '../common/Heading';
-import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import FormFooter from '../common/Form/FormFooter';
 import { Input } from '../ui/input';
+import useApiCall from '@/hooks/user-api-call';
+import blogApi from '@/api/blogApi';
+import { toast } from '@/hooks/use-toast';
 
 const BlogForm = () => {
   const form = useForm<any>({
     defaultValues: {
-      content: '',
+      post: '',
+      title: '',
     },
   });
 
+  const { loading, error, data, execute } = useApiCall({ apiCall: blogApi.createBlog });
+
   const onSubmit = (data: any) => {
-    console.log('form submitted', data);
+    execute(data);
   };
+
+  useEffect(() => {
+    if (data?.data?.id) {
+      toast({ description: 'Blog Created Successfully' });
+    }
+  }, [data]);
+
+  if (error) {
+    toast({ description: 'Something went wrong' });
+  }
 
   return (
     <div className="p-4 flex flex-col gap-4">
@@ -24,7 +41,7 @@ const BlogForm = () => {
           <FormField
             rules={{ required: 'Title' }}
             control={form.control}
-            name="email"
+            name="title"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Title</FormLabel>
@@ -38,7 +55,7 @@ const BlogForm = () => {
           <FormField
             rules={{ required: 'Please write something...' }}
             control={form.control}
-            name="content"
+            name="post"
             render={({ field }) => {
               console.log(field);
               return (
@@ -52,7 +69,12 @@ const BlogForm = () => {
             }}
           />
         </form>
-        <FormFooter onCreate={form.handleSubmit(onSubmit)} />
+        <FormFooter
+          createProps={{
+            loading,
+            onCreate: form.handleSubmit(onSubmit),
+          }}
+        />
       </Form>
     </div>
   );

@@ -9,9 +9,6 @@ import (
 
 func SetUpRoutes(app *fiber.App) {
 	app.Get("/blog/:id?", controller.FetchBlog)
-	app.Post("/blog", controller.BlogCreate)
-	app.Put("/blog/:id", controller.BlogUpdate)
-	app.Delete("/blog/:id", controller.BlogDelete)
 
 	app.Post("/auth/register", auth.Register)
 	app.Post("/auth/login", auth.LogIn)
@@ -20,5 +17,8 @@ func SetUpRoutes(app *fiber.App) {
 	privateRoute := app.Group("/private")
 	privateRoute.Use(middleware.AuthenticateToken)
 	privateRoute.Get("/user-profile", controller.GetProfile)
+	privateRoute.Post("/blog", controller.BlogCreate)
+	privateRoute.Put("/blog/:id", controller.BlogUpdate)
+	privateRoute.Delete("/blog/:id", controller.BlogDelete)
 
 }
