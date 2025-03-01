@@ -49,7 +49,7 @@ export function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild onClick={item.onClick}>
-                    <span>{item.title}</span>
+                    <span className="custom-hyperlink">{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -64,7 +64,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => navigate('/form/blog/new')}>
-                  Write Your own blog
+                  <span className="custom-hyperlink">Write Your own blog</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <DropdownMenuTrigger asChild>
@@ -74,7 +74,7 @@ export function AppSidebar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
                 <DropdownMenuItem onClick={logOut}>
-                  <span>Sign out</span>
+                  <span className="custom-hyperlink">Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

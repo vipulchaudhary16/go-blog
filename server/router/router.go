@@ -17,7 +17,7 @@ func SetUpRoutes(app *fiber.App) {
 	privateRoute := app.Group("/private")
 	privateRoute.Use(middleware.AuthenticateToken)
 	privateRoute.Get("/user-profile", controller.GetProfile)
-	privateRoute.Post("/blog", controller.BlogCreate)
+	privateRoute.Post("/blog", controller.BlogUpsert)
 	privateRoute.Put("/blog/:id", controller.BlogUpdate)
 	privateRoute.Delete("/blog/:id", controller.BlogDelete)
 

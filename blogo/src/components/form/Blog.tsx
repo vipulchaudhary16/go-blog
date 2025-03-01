@@ -8,8 +8,11 @@ import { Input } from '../ui/input';
 import useApiCall from '@/hooks/user-api-call';
 import blogApi from '@/api/blogApi';
 import { toast } from '@/hooks/use-toast';
+import { useParams } from 'react-router';
+import useFetchData from '@/hooks/use-fetch-data';
 
 const BlogForm = () => {
+  const { id } = useParams();
   const form = useForm<any>({
     defaultValues: {
       post: '',
@@ -17,10 +20,25 @@ const BlogForm = () => {
     },
   });
 
+  const { data: fetchData } = useFetchData({
+    apiCall: blogApi.getBlog,
+    payload: id?.toString(),
+  });
+
+  useEffect(() => {
+    if (fetchData?.data) {
+      form.setValue('title', fetchData.data.title);
+      form.setValue('post', fetchData.data.post);
+    }
+  }, [fetchData]);
+
   const { loading, error, data, execute } = useApiCall({ apiCall: blogApi.createBlog });
 
   const onSubmit = (data: any) => {
-    execute(data);
+    execute({
+      ...data,
+      id: id != 'new' ? parseInt(id ?? '') : null,
+    });
   };
 
   useEffect(() => {
@@ -74,6 +92,7 @@ const BlogForm = () => {
             loading,
             onCreate: form.handleSubmit(onSubmit),
           }}
+          createText={id != 'new' ? 'Update' : 'Create'}
         />
       </Form>
     </div>

@@ -73,6 +73,9 @@ module.exports = {
         '.centered-full-screen': {
           '@apply flex flex-col gap-5 justify-center items-center h-screen': {},
         },
+        '.custom-hyperlink': {
+          '@apply text-[#1395f2] cursor-pointer': {},
+        },
       });
     },
   ],

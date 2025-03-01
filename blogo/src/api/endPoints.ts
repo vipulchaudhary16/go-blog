@@ -3,4 +3,5 @@ export const API_ENDPOINTS = {
   REGISTER: '/auth/register',
   USER_PROFILE: '/private/user-profile',
   CREATE_BLOG: '/private/blog',
+  GET_BLOG: '/blog',
 };

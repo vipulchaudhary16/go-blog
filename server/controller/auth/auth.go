@@ -72,8 +72,8 @@ func LogIn(c *fiber.Ctx) error {
 		return c.JSON(res)
 	}
 
-	token, err := helper.GenerateToken(user, 30, helper.TOKEN_TYPE_ACCESS)
-	refreshToken, refreshTokenErr := helper.GenerateToken(user, 30, helper.TOKEN_TYPE_REFRESH)
+	token, err := helper.GenerateToken(user, 3000, helper.TOKEN_TYPE_ACCESS)
+	refreshToken, refreshTokenErr := helper.GenerateToken(user, 3000, helper.TOKEN_TYPE_REFRESH)
 
 	if err != nil || refreshTokenErr != nil {
 		c.Status(500)

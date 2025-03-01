@@ -1,8 +1,10 @@
+import { AnyNsRecord } from 'dns';
 import { useEffect, useState } from 'react';
 
 interface Props {
-  apiCall: () => Promise<any>;
+  apiCall: (payload: AnyNsRecord) => Promise<any>;
   dependencies?: any[];
+  payload?: any;
 }
 
 const useFetchData = (props: Props) => {
@@ -10,13 +12,13 @@ const useFetchData = (props: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
-  const { apiCall, dependencies = [] } = props;
+  const { apiCall, dependencies = [], payload } = props;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await apiCall();
+        const result = await apiCall(payload);
         setData(result);
       } catch (err) {
         setError(err);
@@ -28,7 +30,7 @@ const useFetchData = (props: Props) => {
     fetchData();
   }, dependencies);
 
-  return { data, loading, error };
+  return { data, loading, error } as any;
 };
 
 export default useFetchData;

@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/vipulchaudhary16/go-blog/database"
 	"github.com/vipulchaudhary16/go-blog/helper"
@@ -17,19 +15,29 @@ func FetchBlog(c *fiber.Ctx) error {
 
 	db := database.DBConn
 	id := c.Params("id")
-	log.Print(id)
+	userID := c.Query("user_id")
 
 	if id != "" {
 		var record model.Blog
-		db.Find(&record, id)
+		if err := db.Preload("User").First(&record, id).Error; err != nil { // Preload User
+			response["StatusText"] = "error"
+			response["message"] = "Blog not found"
+			c.Status(404)
+			return c.JSON(response)
+		}
 		response["data"] = record
 		c.Status(200)
 		return c.JSON(response)
 	}
 
 	var records []model.Blog
+	query := db.Preload("User") // Ensure all blogs include User data
 
-	if err := db.Find(&records).Error; err != nil {
+	if userID != "" {
+		query = query.Where("user_id = ?", userID)
+	}
+
+	if err := query.Find(&records).Error; err != nil {
 		response["StatusText"] = "error"
 		response["message"] = "Failed to fetch blogs"
 		c.Status(500)
@@ -37,12 +45,11 @@ func FetchBlog(c *fiber.Ctx) error {
 	}
 
 	response["data"] = records
-
 	c.Status(200)
 	return c.JSON(response)
 }
 
-func BlogCreate(c *fiber.Ctx) error {
+func BlogUpsert(c *fiber.Ctx) error {
 	response := fiber.Map{}
 
 	record := new(model.Blog)
@@ -54,22 +61,40 @@ func BlogCreate(c *fiber.Ctx) error {
 	}
 
 	payload := c.Locals("payload")
-
 	userId := payload.(*helper.TokenPayload).UserId
 	record.UserID = userId
 
-	result := database.DBConn.Create(record)
+	print(record)
 
-	if result.Error != nil {
+	db := database.DBConn
+
+	// If ID is provided, check if the blog exists
+	if record.ID != 0 {
+		existingBlog := model.Blog{}
+		if err := db.First(&existingBlog, record.ID).Error; err == nil {
+			// Blog exists, update it
+			if err := db.Model(&existingBlog).Updates(record).Error; err != nil {
+				response["message"] = "Failed to update blog"
+				c.Status(500)
+				return c.JSON(response)
+			}
+			response["message"] = "Blog updated"
+			response["data"] = existingBlog
+			c.Status(200)
+			return c.JSON(response)
+		}
+	}
+
+	// Blog does not exist, create a new one
+	if err := db.Create(record).Error; err != nil {
 		response["message"] = "Failed to create blog"
 		c.Status(500)
 		return c.JSON(response)
 	}
 
-	c.Status(201)
 	response["message"] = "Blog created"
 	response["data"] = record
-
+	c.Status(201)
 	return c.JSON(response)
 }
 
