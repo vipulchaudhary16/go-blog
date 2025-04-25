@@ -1,13 +1,7 @@
 import userApi from '@/api/userApi';
 import Loader from '@/components/common/Loader';
+import { User } from '@/types/user';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
 
 interface UserContextProps {
   user: User | null;

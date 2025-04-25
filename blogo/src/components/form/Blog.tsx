@@ -8,8 +8,9 @@ import { Input } from '../ui/input';
 import useApiCall from '@/hooks/user-api-call';
 import blogApi from '@/api/blogApi';
 import { toast } from '@/hooks/use-toast';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import useFetchData from '@/hooks/use-fetch-data';
+import { useHeader } from '@/contexts/HeaderContext';
 
 const BlogForm = () => {
   const { id } = useParams();
@@ -19,20 +20,14 @@ const BlogForm = () => {
       title: '',
     },
   });
+  const navigate = useNavigate();
+  const { setHeaderTitle } = useHeader();
 
+  const { loading, error, data, execute } = useApiCall({ apiCall: blogApi.createBlog });
   const { data: fetchData } = useFetchData({
     apiCall: blogApi.getBlog,
     payload: id?.toString(),
   });
-
-  useEffect(() => {
-    if (fetchData?.data) {
-      form.setValue('title', fetchData.data.title);
-      form.setValue('post', fetchData.data.post);
-    }
-  }, [fetchData]);
-
-  const { loading, error, data, execute } = useApiCall({ apiCall: blogApi.createBlog });
 
   const onSubmit = (data: any) => {
     execute({
@@ -42,8 +37,21 @@ const BlogForm = () => {
   };
 
   useEffect(() => {
+    form.reset();
+  }, [id]);
+
+  useEffect(() => {
+    if (fetchData?.data) {
+      form.setValue('title', fetchData.data.title);
+      form.setValue('post', fetchData.data.post);
+    }
+    setHeaderTitle(`${id !== 'new' ? `Updating ${fetchData?.data?.title}` : 'Writing a new blog'}`);
+  }, [fetchData]);
+
+  useEffect(() => {
     if (data?.data?.id) {
-      toast({ description: 'Blog Created Successfully' });
+      toast({ description: `Blog ${id === 'new' ? 'Created' : 'Updated'}` });
+      navigate(`/blog/${data?.data?.id}`);
     }
   }, [data]);
 

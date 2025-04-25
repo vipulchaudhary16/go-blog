@@ -3,11 +3,18 @@ import useFetchData from '@/hooks/use-fetch-data';
 import blogApi from '@/api/blogApi';
 import Loader from '../common/Loader';
 import DOMPurify from 'dompurify';
+import { useHeader } from '@/contexts/HeaderContext';
+import { useEffect } from 'react';
 
 const BlogList = () => {
   const { user } = useSession();
   const { data, loading, error } = useFetchData({ apiCall: blogApi.getUserBlogs, payload: user });
+  const { setHeaderTitle } = useHeader();
   const blogs = data?.data;
+
+  useEffect(() => {
+    setHeaderTitle('Your Blogs');
+  }, []);
 
   if (loading) return <Loader text="Loading Your Blogs..." />;
   if (error) return <p className="text-red-600 text-center">Failed to load blogs.</p>;
@@ -20,7 +27,7 @@ const BlogList = () => {
           className="bg-white shadow-md rounded-lg p-6 border border-gray-200 relative flex flex-col h-full"
         >
           <h2 className="text-xl font-semibold text-gray-900 mb-2 mr-5">{blog.title}</h2>
-          <p className="text-sm text-gray-500 mb-2">By {blog.user.first_name}</p>
+          <p className="prose text-sm text-gray-500 mb-2">By {blog.user.first_name}</p>
           <div
             className="text-gray-700 text-sm mb-4 flex-1"
             dangerouslySetInnerHTML={{
@@ -37,7 +44,7 @@ const BlogList = () => {
             </div>
             <a
               href={`/blog/${blog.id}`}
-              className="text-blue-600 text-sm font-medium hover:underline"
+              className="custom-hyperlink text-sm font-medium hover:underline"
             >
               Read more →
             </a>

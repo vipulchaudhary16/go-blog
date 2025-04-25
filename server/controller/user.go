@@ -15,7 +15,9 @@ func GetProfile(c *fiber.Ctx) error {
 	var user model.User
 	userId := payload.(*helper.TokenPayload).UserId
 
-	database.DBConn.First(&user, "id=?", userId)
+	database.DBConn.
+		Preload("SubscribedTo.ToUser").
+		First(&user, "id=?", userId)
 
 	response["user"] = user
 	c.Status(200)

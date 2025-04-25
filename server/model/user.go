@@ -6,4 +6,6 @@ type User struct {
 	Password  string `json:"-" gorm:"column:password"`
 	FirstName string `json:"first_name" gorm:"column:first_name;not null"`
 	LastName  string `json:"last_name" gorm:"column:last_name"`
+
+	SubscribedTo []Subscription `json:"subscribed_to" gorm:"foreignKey:FromId"`
 }

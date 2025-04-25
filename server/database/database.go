@@ -29,6 +29,8 @@ func ConnectDB() {
 
 	db.AutoMigrate(new(model.Blog))
 	db.AutoMigrate(new(model.User))
+	db.AutoMigrate(new(model.EmailActivity))
+	db.AutoMigrate(new(model.Subscription))
 
 	DBConn = db
 }

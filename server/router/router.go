@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/vipulchaudhary16/go-blog/controller"
 	"github.com/vipulchaudhary16/go-blog/controller/auth"
+	"github.com/vipulchaudhary16/go-blog/controller/mail"
 	"github.com/vipulchaudhary16/go-blog/middleware"
 )
 
@@ -13,6 +14,7 @@ func SetUpRoutes(app *fiber.App) {
 	app.Post("/auth/register", auth.Register)
 	app.Post("/auth/login", auth.LogIn)
 	app.Get("/auth/refresh-token", auth.RefreshToken)
+	app.Get("/test", mail.SendEmail)
 
 	privateRoute := app.Group("/private")
 	privateRoute.Use(middleware.AuthenticateToken)
@@ -20,5 +22,8 @@ func SetUpRoutes(app *fiber.App) {
 	privateRoute.Post("/blog", controller.BlogUpsert)
 	privateRoute.Put("/blog/:id", controller.BlogUpdate)
 	privateRoute.Delete("/blog/:id", controller.BlogDelete)
+
+	privateRoute.Post("/subscription/subscribe", controller.HandleSubscribe)
+	privateRoute.Post("/subscription/unsubscribe", controller.HandleUnSubscribe)
 
 }

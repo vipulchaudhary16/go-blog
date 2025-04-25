@@ -1,10 +1,11 @@
 package model
 
 import (
+	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 )
 
-// Blog model with JSON support for tags
 type Blog struct {
 	ID     uint            `json:"id" gorm:"primaryKey"`
 	Title  string          `json:"title" gorm:"not null;column:title;size:255"`
@@ -14,15 +15,16 @@ type Blog struct {
 	Tags   JSONStringArray `json:"tags" gorm:"type:json"`
 }
 
-// JSONStringArray is a custom type to store JSON string arrays in MySQL
 type JSONStringArray []string
 
-// Marshal JSONStringArray into JSON
-func (j JSONStringArray) Value() (interface{}, error) {
+func (j JSONStringArray) Value() (driver.Value, error) {
 	return json.Marshal(j)
 }
 
-// Unmarshal JSON string back into JSONStringArray
 func (j *JSONStringArray) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), j)
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("Failed to unmarshal JSONStringArray value: %v", value)
+	}
+	return json.Unmarshal(bytes, j)
 }
