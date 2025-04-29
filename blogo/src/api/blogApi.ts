@@ -17,4 +17,9 @@ const getBlog = async (id: any) => {
   return response.data;
 };
 
-export default { createBlog, getUserBlogs, getBlog };
+const getFeed = async () => {
+  const response = await axiosInstance.get(`${API_ENDPOINTS.FEED}`);
+  return response;
+};
+
+export default { createBlog, getUserBlogs, getBlog, getFeed };

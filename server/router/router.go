@@ -23,6 +23,8 @@ func SetUpRoutes(app *fiber.App) {
 	privateRoute.Put("/blog/:id", controller.BlogUpdate)
 	privateRoute.Delete("/blog/:id", controller.BlogDelete)
 
+	privateRoute.Get("/feed", controller.GetFeed)
+
 	privateRoute.Post("/subscription/subscribe", controller.HandleSubscribe)
 	privateRoute.Post("/subscription/unsubscribe", controller.HandleUnSubscribe)
 

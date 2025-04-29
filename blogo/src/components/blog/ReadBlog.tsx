@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 
 const ReadBlog = () => {
   const { id } = useParams();
-  const { data, loading, error } = useFetchData({
+  const { data, loading, error, refetch } = useFetchData({
     apiCall: blogApi.getBlog,
     payload: id?.toString(),
   });
@@ -39,7 +39,7 @@ const ReadBlog = () => {
           <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.post) }}></div>
         </div>
         <div className="mt-auto">
-          <BlogFooter blog={blog} />
+          <BlogFooter blog={blog} refetchBlog={refetch} />
         </div>
       </div>
     </div>

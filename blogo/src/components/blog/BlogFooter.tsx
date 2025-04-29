@@ -7,7 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import { useSession } from '@/contexts/UserContext';
 import { getIfUserHasSubscribedToGivenUser } from '@/helpers/subscription';
 
-const BlogFooter = ({ blog }: any) => {
+const BlogFooter = ({ blog, refetchBlog }: any) => {
   const { user } = blog;
   const session = useSession();
 
@@ -37,6 +37,8 @@ const BlogFooter = ({ blog }: any) => {
   useEffect(() => {
     if (subscribe_data || unsubscribe_data) {
       toast({ description: subscribe_data?.data.message || unsubscribe_data?.data?.message });
+      refetchBlog && refetchBlog();
+      session.fetchUser && session.fetchUser();
     }
 
     if (subscribe_error || unsubscribe_error) {
@@ -57,10 +59,12 @@ const BlogFooter = ({ blog }: any) => {
           <p className="text-sm text-gray-500 m-0">{user.email}</p>
         </div>
       </div>
-      <Button className=" text-white px-4 py-2 rounded-md " onClick={() => handleSubscribe()}>
-        {isAlreadySubscribed ? 'Unsubscribe' : 'Subscribe'}{' '}
-        {(unsubscribe_loading || subscribe_loading) ?? '...'}
-      </Button>
+      {session?.user?.id !== user.id ? (
+        <Button className=" text-white px-4 py-2 rounded-md " onClick={() => handleSubscribe()}>
+          {isAlreadySubscribed ? 'Unsubscribe' : 'Subscribe'}{' '}
+          {(unsubscribe_loading || subscribe_loading) ?? '...'}
+        </Button>
+      ) : null}
     </div>
   );
 };

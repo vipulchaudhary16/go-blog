@@ -5,11 +5,12 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,7 @@ import {
 } from '../ui/dropdown-menu';
 import { ChevronUp } from 'lucide-react';
 import { useSession } from '@/contexts/UserContext';
+import logo from '@/assets/logo.png';
 
 export function AppSidebar() {
   const navigate = useNavigate();
@@ -42,6 +44,12 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
+        <SidebarHeader>
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="Blogo" className="h-8 w-8 rounded-full mr-2" />
+            <h1 className="text-xl font-bold">Blogo</h1>
+          </Link>
+        </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupLabel>Basic</SidebarGroupLabel>
           <SidebarGroupContent>

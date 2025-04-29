@@ -6,6 +6,7 @@ import { Toaster } from './components/ui/toaster';
 import BlogForm from './components/form/Blog';
 import BlogList from './components/blog/BlogList';
 import ReadBlog from './components/blog/ReadBlog';
+import Feed from './components/feed/Feed';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route element={<LoggedInRoute />}>
-          <Route path="/" element={<div>Home</div>} />
+          <Route path="/" element={<Feed />} />
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blog/:id" element={<ReadBlog />} />
           <Route path="/subscriptions" element={<div>Your Subscriptions</div>} />

@@ -6,4 +6,5 @@ export const API_ENDPOINTS = {
   GET_BLOG: '/blog',
   SUBSCRIBE: '/private/subscription/subscribe',
   UNSUBSCRIBE: '/private/subscription/unsubscribe',
+  FEED: '/private/feed',
 };
