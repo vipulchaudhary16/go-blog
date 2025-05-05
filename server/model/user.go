@@ -8,4 +8,5 @@ type User struct {
 	LastName  string `json:"last_name" gorm:"column:last_name"`
 
 	SubscribedTo []Subscription `json:"subscribed_to" gorm:"foreignKey:FromId"`
+	Subscribers  []Subscription `json:"subscribers" gorm:"foreignKey:ToId;constraint:OnDelete:CASCADE;"`
 }

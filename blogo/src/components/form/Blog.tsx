@@ -33,6 +33,7 @@ const BlogForm = () => {
     execute({
       ...data,
       id: id != 'new' ? parseInt(id ?? '') : null,
+      tags: data.tags?.split(',').map((tag: string) => tag.trim()),
     });
   };
 
@@ -44,6 +45,7 @@ const BlogForm = () => {
     if (fetchData?.data) {
       form.setValue('title', fetchData.data.title);
       form.setValue('post', fetchData.data.post);
+      form.setValue('tags', fetchData.data.tags?.join(', '));
     }
     setHeaderTitle(`${id !== 'new' ? `Updating ${fetchData?.data?.title}` : 'Writing a new blog'}`);
   }, [fetchData]);
@@ -64,20 +66,39 @@ const BlogForm = () => {
       <Heading level={3}>Start your blog....</Heading>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
-          <FormField
-            rules={{ required: 'Title' }}
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="Give it a beautiful title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex w-full gap-2">
+            <div className="w-2/3">
+              <FormField
+                rules={{ required: 'Title' }}
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Give it a beautiful title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/3">
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tags</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Add tags (comma separated)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <FormField
             rules={{ required: 'Please write something...' }}
             control={form.control}

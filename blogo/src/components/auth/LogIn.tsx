@@ -7,10 +7,13 @@ import useApiCall from '@/hooks/user-api-call';
 import authApi from '@/api/authApi';
 import { useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { useSearchParams } from 'react-router';
 
 type Props = {};
 
 function LogIn({}: Props) {
+  const [searchParams] = useSearchParams();
+  const successUrl = searchParams.get('success_url');
   const form = useForm<any>({
     defaultValues: {
       email: '',
@@ -28,8 +31,11 @@ function LogIn({}: Props) {
   useEffect(() => {
     if (data) {
       localStorage.setItem('token', data.token);
-      navigate('/');
+
       toast({ description: 'User Logged In Successfully' });
+      if (successUrl) {
+        navigate(successUrl);
+      } else navigate('/');
       window.location.reload();
     }
 

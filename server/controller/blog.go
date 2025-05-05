@@ -5,6 +5,7 @@ import (
 	"github.com/vipulchaudhary16/go-blog/database"
 	"github.com/vipulchaudhary16/go-blog/helper"
 	"github.com/vipulchaudhary16/go-blog/model"
+	"github.com/vipulchaudhary16/go-blog/workers"
 )
 
 func FetchBlog(c *fiber.Ctx) error {
@@ -64,12 +65,15 @@ func BlogUpsert(c *fiber.Ctx) error {
 	userId := payload.(*helper.TokenPayload).UserId
 	record.UserID = userId
 
+	update_blog := false
+
 	print(record)
 
 	db := database.DBConn
 
 	// If ID is provided, check if the blog exists
 	if record.ID != 0 {
+		update_blog = true
 		existingBlog := model.Blog{}
 		if err := db.First(&existingBlog, record.ID).Error; err == nil {
 			// Blog exists, update it
@@ -90,6 +94,10 @@ func BlogUpsert(c *fiber.Ctx) error {
 		response["message"] = "Failed to create blog"
 		c.Status(500)
 		return c.JSON(response)
+	}
+
+	if !update_blog {
+		go workers.SendEmailOfNewBlogToSubscribers(record.ID)
 	}
 
 	response["message"] = "Blog created"

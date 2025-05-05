@@ -14,8 +14,11 @@ type EmailResult struct {
 	Remarks string
 }
 
-func SendEmailAsync(to_email []string, msg string, ch chan<- EmailResult) {
+func SendEmailAsync(to_email []string, subject string, msg string, ch chan<- EmailResult) {
 	auth := smtp.PlainAuth("", os.Getenv("email"), os.Getenv("email_password"), "smtp.gmail.com")
+
+	msg = "Subject: " + subject + "\n\n" + msg
+
 	err := smtp.SendMail("smtp.gmail.com:587", auth, os.Getenv("email"), to_email, []byte(msg))
 	if err != nil {
 		ch <- EmailResult{
@@ -35,6 +38,7 @@ func SendEmail(to_emails []string, subject string, msg string) {
 
 	go SendEmailAsync(
 		to_emails,
+		subject,
 		msg,
 		ch,
 	)
