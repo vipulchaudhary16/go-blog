@@ -7,6 +7,7 @@ import BlogForm from './components/form/Blog';
 import BlogList from './components/blog/BlogList';
 import ReadBlog from './components/blog/ReadBlog';
 import Feed from './components/feed/Feed';
+import Subscriptions from './components/user/Subscriptions';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path="/" element={<Feed />} />
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blog/:id" element={<ReadBlog />} />
-          <Route path="/subscriptions" element={<div>Your Subscriptions</div>} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
 
           <Route path="/form/blog/:id" element={<BlogForm />} />
         </Route>

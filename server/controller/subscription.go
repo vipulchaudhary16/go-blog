@@ -76,3 +76,25 @@ func HandleUnSubscribe(c *fiber.Ctx) error {
 	c.Status(200)
 	return c.JSON(response)
 }
+
+func MySubscriptions(c *fiber.Ctx) error {
+	response := fiber.Map{}
+
+	db := database.DBConn.Preload("ToUser").Preload("FromUser")
+
+	payload := c.Locals("payload")
+	currentUserId := payload.(*helper.TokenPayload).UserId
+
+	var subscriptions []model.Subscription
+
+	if err := db.Where("from_id = ?", currentUserId).Find(&subscriptions).Error; err != nil {
+		response["message"] = "Failed to fetch subscriptions"
+		c.Status(500)
+		return c.JSON(response)
+	}
+
+	response["message"] = "Subscriptions fetched successfully"
+	response["data"] = subscriptions
+	c.Status(200)
+	return c.JSON(response)
+}

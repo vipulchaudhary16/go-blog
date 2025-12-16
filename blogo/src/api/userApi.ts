@@ -6,4 +6,9 @@ const userProfile = async () => {
   return response.data;
 };
 
-export default { userProfile };
+const userSubscriptions = async () => {
+  const response = await axiosInstance.get(API_ENDPOINTS.USER_SUBSCRIPTIONS);
+  return response.data;
+};
+
+export default { userProfile, userSubscriptions };

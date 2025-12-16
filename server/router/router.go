@@ -27,5 +27,5 @@ func SetUpRoutes(app *fiber.App) {
 
 	privateRoute.Post("/subscription/subscribe", controller.HandleSubscribe)
 	privateRoute.Post("/subscription/unsubscribe", controller.HandleUnSubscribe)
-
+	privateRoute.Get("/user/subscriptions", controller.MySubscriptions)
 }
