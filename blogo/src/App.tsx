@@ -21,7 +21,6 @@ function App() {
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blog/:id" element={<ReadBlog />} />
           <Route path="/subscriptions" element={<Subscriptions />} />
-
           <Route path="/form/blog/:id" element={<BlogForm />} />
         </Route>
       </Routes>
